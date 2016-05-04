@@ -1,4 +1,11 @@
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+
 public class Solver {
 	
 	/*
@@ -9,6 +16,14 @@ public class Solver {
 	
 	public static void main(String[] args) 
 	{
+            FileInputStream is = null;
+            try {
+                is = new FileInputStream(new File("samp_game_01.txt"));
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Solver.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            System.setIn(is);
+            
 		Board b = new Board();
                 Agent human1 = new HumanTTTAgent("A");
               //  human1.setRole(0);

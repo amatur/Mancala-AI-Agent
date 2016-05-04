@@ -9,7 +9,7 @@ public class Board {
         board = new int[14];
 
         initialize();
-        printBoard();
+        //printBoard();
     }
 
     public void initialize() {
@@ -49,6 +49,10 @@ public class Board {
             i++;
             int newpos = getIthPos(startMovingPos, i);
             if (role == LEFT_PLAYER) {
+                if (newpos == MANCALA_RIGHT_TOP) {
+                    loop_counter++;
+                    continue;
+                }
                 board[newpos]++;
 
                 //last coin landing on an empty pot
@@ -61,12 +65,13 @@ public class Board {
                     board[LEFT_POT[newpos]] = 0;
                 }
 
-                if (newpos == MANCALA_RIGHT_TOP) {
+                
+            }
+            if (role == RIGHT_PLAYER) {
+                if (newpos == MANCALA_LEFT_BOTTOM) {
                     loop_counter++;
                     continue;
                 }
-            }
-            if (role == RIGHT_PLAYER) {
                 board[newpos]++;
                 //last coin landing on an empty pot
                 if (i == loop_counter && board[newpos] == 1 && 8 <= newpos && newpos <= 13) {
@@ -77,10 +82,7 @@ public class Board {
                     board[RIGHT_POT[14 - newpos]] = 0;
                     board[LEFT_POT[14 - newpos]] = 0;
                 }
-                if (newpos == MANCALA_LEFT_BOTTOM) {
-                    loop_counter++;
-                    continue;
-                }
+                
             }
 
         }
@@ -93,8 +95,10 @@ public class Board {
             totcoins += board[j];
         }
         assert (totcoins == 48);
-
+        
         freeTurn = retbool;
+        initiateEnd();
+        if(isEnd()) freeTurn = false;
     }
 
     public String toString() {
@@ -163,6 +167,26 @@ public class Board {
 
     public boolean isEnd() {
         return board[MANCALA_LEFT_BOTTOM] + board[MANCALA_RIGHT_TOP] == 48;
+    }
+    
+    public void initiateEnd(){
+        int lcount = 0;
+        int rcount = 0;
+        for (int i = 1, j = 8; i <= 6; i++, j++) {
+            lcount += board[i];
+            rcount += board[j];
+        }
+        if(lcount==0){
+             for (int j = 8; j<=13; j++) {
+                board[j] = 0;
+             }
+             board[MANCALA_RIGHT_TOP]+= rcount;
+        }else if(rcount==0){
+            for (int i = 1; i<=6; i++) {
+                board[i] = 0;
+            }
+            board[MANCALA_LEFT_BOTTOM]+= lcount;
+        }
     }
 
     public ArrayList<Board> neighbors() // all neighboring boards

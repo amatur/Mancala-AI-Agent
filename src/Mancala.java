@@ -37,7 +37,12 @@ public class Mancala extends Game {
      */
     @Override
     boolean isFinished() {
-        return board.isEnd();
+        board.initiateEnd();
+        if (checkForWin() != -1) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -59,7 +64,13 @@ public class Mancala extends Game {
      * @return role of the winner, if no winner/ still game is going on -1.
      */
     public int checkForWin() {
-        return board.getWinner();
+        winner = null;
+    	int winRole= board.getWinner();
+    	if(winRole!=-1)
+    	{
+    		winner = agent[winRole];
+    	}
+	return winRole;
     }
 
     @Override

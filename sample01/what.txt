@@ -1,0 +1,2 @@
+
+me = 26, him = 22, left start

@@ -45,6 +45,7 @@ public class HumanTTTAgent extends Agent {
             move = -1;
             try {
                 move = in.nextInt();
+                System.out.println("Your move: "+ " ("+role+ ") " + move);
             } catch (Exception e) {
                 first = false;
                 in.next();
