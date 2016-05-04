@@ -10,6 +10,12 @@ public class Solver {
 	public static void main(String[] args) 
 	{
 		Board b = new Board();
+                Agent human1 = new HumanTTTAgent("A");
+              //  human1.setRole(0);
+                Agent human2 = new HumanTTTAgent("B");
+               // human2.setRole(1);
+                Game game = new Mancala(human1,human2);
+                game.play();
 /*
 		Agent human = new HumanTTTAgent("Neo");
 		//Agent human = new MinimaxTTTAgent("007");

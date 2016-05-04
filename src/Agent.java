@@ -10,6 +10,7 @@ public abstract class Agent
 	int role; // This is important, Each agent will be assigned a role beforehand. 
 				//For example, for tick tack toe X will be assigned to one agent, and 0 will be assigned to another agent
 				// The roles are stored as integer. 
+                                // For mancala, LEFT PLAYER = 0, RIGHT PLAYER = 1
 	public Agent(String name) 
 	{
 		// TODO Auto-generated constructor stub

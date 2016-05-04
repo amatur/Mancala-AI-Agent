@@ -26,6 +26,9 @@ public class Mancala extends Game {
         board = new Board();
     }
     
+    boolean isValidMove(int move, int role){
+        return board.isValidMove(move, role);
+    }
 
     /**
      * Called by the play method of Game class. It must update the winner
