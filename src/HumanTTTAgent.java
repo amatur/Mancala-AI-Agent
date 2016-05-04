@@ -24,7 +24,6 @@ public class HumanTTTAgent extends Agent {
 
         int move;
         Mancala tttGame = (Mancala) game;
-
         boolean first = true;
         do {
             if (first) {

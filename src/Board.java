@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Board {
-    
+
     public Board() {
         board = new int[14];
 
         initialize();
         printBoard();
     }
-    
-    public void initialize(){
+
+    public void initialize() {
         board[MANCALA_LEFT_BOTTOM] = board[MANCALA_RIGHT_TOP] = 0;
         for (int i = 1, j = 13; i <= 6; i++, j--) {
             board[i] = 4;
@@ -20,44 +20,83 @@ public class Board {
         }
     }
 
-    public void updateFromMove(int move, int role){
+    public void updateFromMove(int move, int role) {
+        boolean retbool = false;
         int startMovingCoins = -1;
         int startMovingPos = -1;
-        if(role==LEFT_PLAYER){
+        if (role == LEFT_PLAYER) {
+
             startMovingCoins = board[LEFT_POT[move]];
             startMovingPos = LEFT_POT[move];
-        }
-        else if(role==RIGHT_PLAYER){
+            //free-turn
+            if (getIthPos(startMovingPos, startMovingCoins) == MANCALA_LEFT_BOTTOM) {
+                retbool = true;
+            }
+        } else if (role == RIGHT_PLAYER) {
             startMovingCoins = board[RIGHT_POT[move]];
             startMovingPos = RIGHT_POT[move];
+            //free-turn
+            if (getIthPos(startMovingPos, startMovingCoins) == MANCALA_RIGHT_TOP) {
+                retbool = true;
+
+            }
         }
+
         //distribute coins
+        board[startMovingPos] -= startMovingCoins;
         int loop_counter = startMovingCoins;
-        for(int i = 0; i<loop_counter; ){
+        for (int i = 0; i < loop_counter;) {
             i++;
             int newpos = getIthPos(startMovingPos, i);
-            if(role==LEFT_PLAYER && newpos==MANCALA_RIGHT_TOP){
-                loop_counter++;
-                continue;
+            if (role == LEFT_PLAYER) {
+                board[newpos]++;
+
+                //last coin landing on an empty pot
+                if (i == loop_counter && board[newpos] == 1 && 1 <= newpos && newpos <= 6) {
+                    printBoard();
+                    System.out.println("Captured!");
+
+                    board[MANCALA_LEFT_BOTTOM] += board[RIGHT_POT[newpos]] + board[LEFT_POT[newpos]];
+                    board[RIGHT_POT[newpos]] = 0;
+                    board[LEFT_POT[newpos]] = 0;
+                }
+
+                if (newpos == MANCALA_RIGHT_TOP) {
+                    loop_counter++;
+                    continue;
+                }
             }
-            if(role==RIGHT_PLAYER && newpos==MANCALA_LEFT_BOTTOM){
-                loop_counter++;
-                continue;
+            if (role == RIGHT_PLAYER) {
+                board[newpos]++;
+                //last coin landing on an empty pot
+                if (i == loop_counter && board[newpos] == 1 && 8 <= newpos && newpos <= 13) {
+                    printBoard();
+                    System.out.println("Captured!");
+
+                    board[MANCALA_RIGHT_TOP] += board[RIGHT_POT[14 - newpos]] + board[LEFT_POT[14 - newpos]];
+                    board[RIGHT_POT[14 - newpos]] = 0;
+                    board[LEFT_POT[14 - newpos]] = 0;
+                }
+                if (newpos == MANCALA_LEFT_BOTTOM) {
+                    loop_counter++;
+                    continue;
+                }
             }
-            board[newpos]++;
+
         }
-        board[startMovingPos] -= startMovingCoins;
-        
+
         int totcoins = 0;
-        totcoins+=board[MANCALA_LEFT_BOTTOM];
-        totcoins+= board[MANCALA_RIGHT_TOP];
+        totcoins += board[MANCALA_LEFT_BOTTOM];
+        totcoins += board[MANCALA_RIGHT_TOP];
         for (int i = 1, j = 13; i <= 6; i++, j--) {
-            totcoins+=board[i] ;
-            totcoins+=board[j] ;
+            totcoins += board[i];
+            totcoins += board[j];
         }
-        assert(totcoins==48);
+        assert (totcoins == 48);
+
+        freeTurn = retbool;
     }
-    
+
     public String toString() {
         String str = "\n";
         str += ("-------------------\n");
@@ -89,9 +128,10 @@ public class Board {
 
     }
 
-    public int getIthPos(int start, int i){
-        return (start + i)%14;
+    public int getIthPos(int start, int i) {
+        return (start + i) % 14;
     }
+
     public int getWinner() {
         int winner = -1;
         if (isEnd() && board[MANCALA_LEFT_BOTTOM] > board[MANCALA_RIGHT_TOP]) {
@@ -104,23 +144,23 @@ public class Board {
         return winner;
     }
 
-    public boolean isValidMove(int move, int role){
-        if(move<1 || move >6){
+    public boolean isValidMove(int move, int role) {
+        if (move < 1 || move > 6) {
             return false;
-        } 
-        boolean retval = false;
-        if(role==LEFT_PLAYER){
-             if(board[LEFT_POT[move]]!=0){
-                 retval = true;
-             }
         }
-        else if(role==RIGHT_PLAYER){
-            if(board[RIGHT_POT[move]]!=0){
-                 retval = true;
-             }
+        boolean retval = false;
+        if (role == LEFT_PLAYER) {
+            if (board[LEFT_POT[move]] != 0) {
+                retval = true;
+            }
+        } else if (role == RIGHT_PLAYER) {
+            if (board[RIGHT_POT[move]] != 0) {
+                retval = true;
+            }
         }
         return retval;
     }
+
     public boolean isEnd() {
         return board[MANCALA_LEFT_BOTTOM] + board[MANCALA_RIGHT_TOP] == 48;
     }
@@ -157,9 +197,9 @@ public class Board {
     public static final int LEFT_PLAYER = 0;
     public static final int RIGHT_PLAYER = 1;
     private int[] board;
-    public static final int[] LEFT_POT = {7,1,2,3,4,5,6};
-    public static final int[] RIGHT_POT ={0,13,12,11,10,9,8};
+    public static final int[] LEFT_POT = {7, 1, 2, 3, 4, 5, 6};
+    public static final int[] RIGHT_POT = {0, 13, 12, 11, 10, 9, 8};
     public static final int MANCALA_LEFT_BOTTOM = 7;
     public static final int MANCALA_RIGHT_TOP = 0;
-
+    public boolean freeTurn = false;
 }

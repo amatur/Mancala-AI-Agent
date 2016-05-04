@@ -68,4 +68,37 @@ public class Mancala extends Game {
         System.out.println(msg);
     }
 
+    
+    /**
+	 * The actual game loop, each player takes turn.
+	 * The first player is selected randomly
+	 */
+        @Override
+	public void play()
+	{
+		updateMessage("Starting " + name + " between "+ agent[0].name+ " and "+ agent[1].name+".");
+		int turn = random.nextInt(2);
+		
+		//System.out.println(agent[turn].name+ " makes the first move.");
+		initialize(false);
+		
+		while(!isFinished())
+		{
+			updateMessage(agent[turn].name+ "'s turn.");
+			agent[turn].makeMove(this);
+			showGameState();
+                        if(!board.freeTurn){
+                            turn = (turn+1)%2;
+                        }else{
+                            updateMessage("***** " + agent[turn].name+ " gets a FREE TURN. ***** ");
+                            board.freeTurn = false;
+                        }
+		}
+		
+		if (winner != null)
+			updateMessage(winner.name+ " wins!!!");
+		else	
+			updateMessage("Game drawn!!");
+		
+	}
 }
