@@ -72,6 +72,10 @@ public class Mancala extends Game {
     	}
 	return winRole;
     }
+    
+    boolean isDraw(){
+        return board.isDraw();
+    }
 
     @Override
     void updateMessage(String msg) {
@@ -93,6 +97,7 @@ public class Mancala extends Game {
 		//System.out.println(agent[turn].name+ " makes the first move.");
 		initialize(false);
 		
+                updateMessage(board.toString());
 		while(!isFinished())
 		{
 			updateMessage(agent[turn].name+ "'s turn.");

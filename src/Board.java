@@ -7,8 +7,14 @@ public class Board {
 
     public Board() {
         board = new int[14];
-
+        freeTurn = false;
         initialize();
+        //printBoard();
+    }
+    
+    public Board(int[] b, boolean freeTurn) {
+        this.board = getArrayCopy(b);
+        this.freeTurn = freeTurn;
         //printBoard();
     }
 
@@ -19,6 +25,7 @@ public class Board {
             board[j] = 4;
         }
     }
+  
 
     public void updateFromMove(int move, int role) {
         boolean retbool = false;
@@ -57,8 +64,8 @@ public class Board {
 
                 //last coin landing on an empty pot
                 if (i == loop_counter && board[newpos] == 1 && 1 <= newpos && newpos <= 6) {
-                    printBoard();
-                    System.out.println("Captured!");
+                   // printBoard();
+                   // System.out.println("Captured!");
 
                     board[MANCALA_LEFT_BOTTOM] += board[RIGHT_POT[newpos]] + board[LEFT_POT[newpos]];
                     board[RIGHT_POT[newpos]] = 0;
@@ -75,8 +82,8 @@ public class Board {
                 board[newpos]++;
                 //last coin landing on an empty pot
                 if (i == loop_counter && board[newpos] == 1 && 8 <= newpos && newpos <= 13) {
-                    printBoard();
-                    System.out.println("Captured!");
+                   // printBoard();
+                   // System.out.println("Captured!");
 
                     board[MANCALA_RIGHT_TOP] += board[RIGHT_POT[14 - newpos]] + board[LEFT_POT[14 - newpos]];
                     board[RIGHT_POT[14 - newpos]] = 0;
@@ -103,17 +110,17 @@ public class Board {
 
     public String toString() {
         String str = "\n";
-        str += ("-------------------\n");
+        str+=("------------------------\n");
 
-        str += ("MANCALA RIGHT\t" + board[MANCALA_RIGHT_TOP]);
-        str += ("-------------------\n");
+        str+=("\t\t" + board[MANCALA_RIGHT_TOP] + "  R(M)\n");
+        str+=("------------------------\n");
 
         for (int i = 1, j = 13; i <= 6; i++, j--) {
-            str += (" L(" + i + ")  " + board[i] + "\t\t" + board[j] + "  R(" + i + ")" + "\n");
+            str+=(" L(" + i + ")  " + board[i] + "\t" + board[j] + "  R(" + i + ")\n");
         }
-        str += ("-------------------\n");
-        str += ("MANCALA LEFT\t" + board[MANCALA_LEFT_BOTTOM]);
-        str += ("-------------------\n");
+        str+=("------------------------\n");
+        str+=(" L(M)  " + board[MANCALA_LEFT_BOTTOM]);
+        str+=("\n------------------------\n");
         return str;
     }
 
@@ -169,6 +176,9 @@ public class Board {
         return board[MANCALA_LEFT_BOTTOM] + board[MANCALA_RIGHT_TOP] == 48;
     }
     
+    public boolean isDraw(){
+        return board[MANCALA_LEFT_BOTTOM] == 24 &&  board[MANCALA_RIGHT_TOP] == 24;
+    }
     public void initiateEnd(){
         int lcount = 0;
         int rcount = 0;
@@ -210,7 +220,7 @@ public class Board {
         return true;
     }
 
-    public int[] getCopy(int board[]) {
+    public int[] getArrayCopy(int board[]) {
         int[] nxtBoard = new int[board.length];
         for (int i = 0; i < board.length; i++) {
             nxtBoard[i] = board[i];
@@ -225,5 +235,5 @@ public class Board {
     public static final int[] RIGHT_POT = {0, 13, 12, 11, 10, 9, 8};
     public static final int MANCALA_LEFT_BOTTOM = 7;
     public static final int MANCALA_RIGHT_TOP = 0;
-    public boolean freeTurn = false;
+    public boolean freeTurn;
 }

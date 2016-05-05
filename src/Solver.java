@@ -16,16 +16,16 @@ public class Solver {
 	
 	public static void main(String[] args) 
 	{
-            FileInputStream is = null;
-            try {
-                is = new FileInputStream(new File("samp_game_01.txt"));
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(Solver.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            System.setIn(is);
+//            FileInputStream is = null;
+//            try {
+//                is = new FileInputStream(new File("samp_game_01.txt"));
+//            } catch (FileNotFoundException ex) {
+//                Logger.getLogger(Solver.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//            System.setIn(is);
             
 		Board b = new Board();
-                Agent human1 = new HumanTTTAgent("A");
+                Agent human1 = new MinimaxTTTAgent("A");
               //  human1.setRole(0);
                 Agent human2 = new HumanTTTAgent("B");
                // human2.setRole(1);
