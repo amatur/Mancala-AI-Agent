@@ -9,16 +9,17 @@
  */
 public class AlphaBetaMancalaAgent extends Agent {
 
-    public int depth;
+    public int dep;
     public int INF = 999999;
 
     public AlphaBetaMancalaAgent(String name, int depth) {
         super(name);
-        this.depth = depth;
+        this.dep = depth;
         // TODO Auto-generated constructor stub
     }
 
     public int evaluate(Mancala game) {
+        //System.out.println("EVVVVVVVVVVVVVA");
         int ownScore = 0;
         int ownMancala = 0;
         int oppScore = 0;
@@ -51,15 +52,17 @@ public class AlphaBetaMancalaAgent extends Agent {
         Mancala tttGame = (Mancala) game;
         int alpha = -INF;
         int beta = INF;
-        CellValueTuple best = max(tttGame, alpha, beta, depth);
+        CellValueTuple best = max(tttGame, alpha, beta, dep);
         if (best.move != -1) {
             tttGame.board.updateFromMove(best.move, role);
+             System.out.println("Your move: "+ " ("+role+ ") " + best.move);
         } else {
             System.out.println("ERROR: COULD NOT FIND A MOVE/END OF MOVES");
         }
     }
 
     private CellValueTuple max(Mancala game, int alpha, int beta, int depth) {
+        //System.out.println("MAX" + depth);
         CellValueTuple maxCVT = new CellValueTuple(); //move = -1
         maxCVT.utility = -INF;
 
@@ -84,6 +87,7 @@ public class AlphaBetaMancalaAgent extends Agent {
         
         //iterate through all possible moves => max 6
         int v = -INF;
+        int v_move = -1;
         int roleAdder = 0;
         if (role == 1) {
             roleAdder = 7;
@@ -101,7 +105,9 @@ public class AlphaBetaMancalaAgent extends Agent {
             boolean isGoingAgain = game.board.freeTurn;
             
             if (isGoingAgain) {
-                v = Math.max(v, max(game, alpha, beta, depth-1).utility);
+                CellValueTuple fromChildMax = max(game, alpha, beta, depth-1);
+                v = Math.max(v, fromChildMax.utility);
+                v_move = i;
                 //already min found a worse path for me (beta), so he won't let me take the new v
                 if (v >= beta) {
                     maxCVT.utility = v;
@@ -110,12 +116,14 @@ public class AlphaBetaMancalaAgent extends Agent {
                 }
                 alpha = Math.max(alpha, v);
                 maxCVT.utility = v;
-                maxCVT.move = i;
+                maxCVT.move = v_move;
             
             
             } else {
                 
-                v = Math.max(v, min(game, alpha, beta, depth-1).utility);
+                CellValueTuple fromChildMax = min(game, alpha, beta, depth-1);
+                v = Math.max(v, fromChildMax.utility);
+                v_move = i;
                 //already min found a worse path for me (beta), so he won't let me take the new v
                 if (v >= beta) {
                     maxCVT.utility = v;
@@ -124,7 +132,7 @@ public class AlphaBetaMancalaAgent extends Agent {
                 }
                 alpha = Math.max(alpha, v);
                 maxCVT.utility = v;
-                maxCVT.move = i;
+                maxCVT.move = v_move;
             }
 
            
@@ -137,6 +145,8 @@ public class AlphaBetaMancalaAgent extends Agent {
 
     
     private CellValueTuple min(Mancala game, int alpha, int beta, int depth) {
+             //   System.out.println("MIN" + depth);
+
         CellValueTuple minCVT = new CellValueTuple(); //move = -1
         minCVT.utility = +INF;
 
@@ -165,46 +175,44 @@ public class AlphaBetaMancalaAgent extends Agent {
         if (role == 1) {
             roleAdder = 7;
         }
-       
+        int v_move = -1;
         for (int i = 1 + roleAdder; i <= 6 + roleAdder; i++) {
             //if(pot is empty, we cannot click there) continue;
-            if (!game.isValidMove(i, role)) {
+            if (!game.isValidMove(i, minRole())) {
                 continue;
             }
             //reaching here it means we've found a  valid move
             //temporarily making that move
             Board boardCopy = new Board(game.board.getBoard(), game.board.freeTurn);
-            game.board.updateFromMove(i, role);
+            game.board.updateFromMove(i, minRole());
             boolean isGoingAgain = game.board.freeTurn;
             
             if (isGoingAgain) {
-                v = Math.min(v, min(game, alpha, beta, depth-1).utility);
+                CellValueTuple fromChildMin =  min(game, alpha, beta, depth-1);
+                v = Math.min(v, fromChildMin.utility);
+                v_move = i;
                 //already min found a worse path for me (beta), so he won't let me take the new v
                 if (v <= alpha) {
                     minCVT.utility = v;
                     minCVT.move = i;
                     return minCVT;
                 }
-                beta = Math.min(alpha, v);
+                beta = Math.min(beta, v);
                 minCVT.utility = v;
                 minCVT.move = i;
-            
-            
             } else {
-                
-                v = Math.min(v, max(game, alpha, beta, depth-1).utility);
+                CellValueTuple fromChildMin =  max(game, alpha, beta, depth-1);
+                v = Math.min(v, fromChildMin.utility);
+                v_move = i;
                 if (v <= alpha) {
                     minCVT.utility = v;
                     minCVT.move = i;
                     return minCVT;
                 }
-                beta = Math.min(alpha, v);
+                beta = Math.min(beta, v);
                 minCVT.utility = v;
                 minCVT.move = i;
             }
-
-           
-            
             //reverting back to original state
             game.board = boardCopy;
         }
@@ -220,9 +228,7 @@ public class AlphaBetaMancalaAgent extends Agent {
     }
 
     class CellValueTuple {
-
         int move, utility;
-
         public CellValueTuple() {
             // TODO Auto-generated constructor stub
             move = -1;

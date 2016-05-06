@@ -17,7 +17,7 @@ public class Board {
     public Board(int[] b, boolean freeTurn) {
         this.board = getArrayCopy(b);
         this.freeTurn = freeTurn;
-        //printBoard();
+       // printBoard();
     }
 
     public void initialize() {

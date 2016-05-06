@@ -25,10 +25,10 @@ public class Solver {
 //            System.setIn(is);
             
 		Board b = new Board();
-                Agent human1 = new AlphaBetaMancalaAgent("A", 100);
+                Agent human1 = new AlphaBetaMancalaAgent("A", 12);
               //  human1.setRole(0);
                 Agent human2 = new HumanTTTAgent("B");
-               // human2.setRole(1);
+              //  human2.setRole(1);
                 Game game = new Mancala(human1,human2);
                 game.play();
 /*
