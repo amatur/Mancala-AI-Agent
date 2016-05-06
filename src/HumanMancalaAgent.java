@@ -3,17 +3,17 @@ import java.util.Scanner;
 
 /**
  * An example class implementing Agent class for human players. The
- * implementation is coupled with the actual game (here, TickTackToe) the agent
+ * implementation is coupled with the actual game (here, Mancala) the agent
  * is playing.
  *
- * @author Azad
+ * @author Amatur
  *
  */
-public class HumanTTTAgent extends Agent {
+public class HumanMancalaAgent extends Agent {
 
     static Scanner in = new Scanner(System.in);
 
-    public HumanTTTAgent(String name) {
+    public HumanMancalaAgent(String name) {
         super(name);
         // TODO Auto-generated constructor stub
     }
@@ -28,10 +28,10 @@ public class HumanTTTAgent extends Agent {
         do {
             if (first) {
                 if(role==0){
-                     System.out.println("Left pots are yours");
+                     //System.out.println("Left pots are yours");
                      System.out.println("Insert non-empty LEFT pot number ([1,6])");
                 }else{
-                      System.out.println("Right pots are yours");
+                      //System.out.println("Right pots are yours");
                       System.out.println("Insert non-empty RIGHT pot number ([1,6])");
                 }
             } else {
@@ -45,7 +45,7 @@ public class HumanTTTAgent extends Agent {
             move = -1;
             try {
                 move = in.nextInt();
-                System.out.println("Your move: "+ " ("+role+ ") " + move);
+                System.out.println(this.name + "'s (human) move: "+ " ("+role+ ") " + move);
             } catch (Exception e) {
                 first = false;
                 in.next();

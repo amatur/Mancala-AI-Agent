@@ -25,13 +25,11 @@ public class Solver {
 //            System.setIn(is);
             
 		Board b = new Board();
-                Agent human1 = new AlphaBetaMancalaAgent("A", 12);
-              //  human1.setRole(0);
-                Agent human2 = new HumanTTTAgent("B");
-              //  human2.setRole(1);
-                Game game = new Mancala(human1,human2);
+                Agent a1 = new AlphaBetaMancalaAgent("Machine", 14);
+                Agent a2 = new HumanMancalaAgent("TASNIM");
+                Game game = new Mancala(a1,a2);
                 game.play();
-/*
+        /*
 		Agent human = new HumanTTTAgent("Neo");
 		//Agent human = new MinimaxTTTAgent("007");
 		Agent machine = new MinimaxTTTAgent("Smith");

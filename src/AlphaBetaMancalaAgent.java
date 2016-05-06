@@ -55,7 +55,8 @@ public class AlphaBetaMancalaAgent extends Agent {
         CellValueTuple best = max(tttGame, alpha, beta, dep);
         if (best.move != -1) {
             tttGame.board.updateFromMove(best.move, role);
-             System.out.println("Your move: "+ " ("+role+ ") " + best.move);
+            System.out.println(this.name + "'s (agent) move: "+ " ("+role+ ") " + best.move);
+        
         } else {
             System.out.println("ERROR: COULD NOT FIND A MOVE/END OF MOVES");
         }
