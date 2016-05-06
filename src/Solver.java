@@ -25,7 +25,7 @@ public class Solver {
 //            System.setIn(is);
             
 		Board b = new Board();
-                Agent human1 = new MinimaxTTTAgent("A");
+                Agent human1 = new AlphaBetaMancalaAgent("A", 100);
               //  human1.setRole(0);
                 Agent human2 = new HumanTTTAgent("B");
                // human2.setRole(1);

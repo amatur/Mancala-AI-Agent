@@ -1,161 +1,232 @@
+
 /**
- * Example AlphaBeta agent extending Agent class.
- * Here, for simplicity of understanding min and max functions are written separately. One single function can do the task. 
+ * Example AlphaBeta agent extending Agent class. Here, for simplicity of
+ * understanding min and max functions are written separately. One single
+ * function can do the task.
+ *
  * @author Amatur
  *
  */
-public class AlphaBetaMancalaAgent extends Agent
-{
-	
-	public AlphaBetaMancalaAgent(String name) {
-		super(name);
-		// TODO Auto-generated constructor stub
-	}
+public class AlphaBetaMancalaAgent extends Agent {
 
-	@Override
-	public void makeMove(Game game) {
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		Mancala tttGame = (Mancala) game;
-		CellValueTuple best = max(tttGame);
-		if(best.move!=-1)
-		{
-			tttGame.board.updateFromMove(best.move, role);
-		}		
-	}
-	
-	private CellValueTuple max(Mancala game)
-	{	
-		CellValueTuple maxCVT = new CellValueTuple();
-		maxCVT.utility = -100;
-		
-		int winner = game.checkForWin();
-		
-		//terminal check
-		if(winner == role)
-		{
-			maxCVT.utility = 1; //this agent wins
-			return maxCVT;
-		}
-		else if(winner!=-1) 
-		{
-			maxCVT.utility = -1; //opponent wins
-			return maxCVT;  
-		}
-		else if (game.isDraw())
-		{
-			maxCVT.utility = 0; //draw
-			return maxCVT;  
-		}
-		
-                //iterate through all possible moves => max 6
-                int roleAdder = 0;
-                if(role==1){
-                       roleAdder = 7;
-                }
+    public int depth;
+    public int INF = 999999;
 
-                for (int i = 1+roleAdder; i <= 6+roleAdder; i++) 
-                {
-                    //if(pot is empty, we cannot click there) continue;
-                    if(!game.isValidMove(i, role)) continue;
+    public AlphaBetaMancalaAgent(String name, int depth) {
+        super(name);
+        this.depth = depth;
+        // TODO Auto-generated constructor stub
+    }
 
-                    //reaching here it means we've found a  valid move
-                    //temporarily making that move
-                    Board boardCopy = new Board(game.board.getBoard(), game.board.freeTurn);
-                    game.board.updateFromMove(i, role);
-                    boolean isGoingAgain = game.board.freeTurn;
-                    int v = -20;
-                    if(isGoingAgain){
-                        v = max(game).utility;
-                    }else{
-                       v = min(game).utility; 
-                    }
-               
-                    if(v>maxCVT.utility)
-                    {
-                            maxCVT.utility=v;
-                            maxCVT.move = i;
-                    }
-                    //reverting back to original state
-                    game.board = boardCopy;
-                }
-              return maxCVT;		
-	}
+    public int evaluate(Mancala game) {
+        int ownScore = 0;
+        int ownMancala = 0;
+        int oppScore = 0;
+        int oppMancala = 0;
+        int roleAdder = 0;
+        if (role == 0) {
+            //LEFT
+            ownMancala += game.board.getBoard()[game.board.MANCALA_LEFT_BOTTOM];
+            oppMancala += game.board.getBoard()[game.board.MANCALA_RIGHT_TOP];
+        } else {
+            //RIGHT
+            roleAdder = 7;
+            ownMancala += game.board.getBoard()[game.board.MANCALA_RIGHT_TOP];
+            oppMancala += game.board.getBoard()[game.board.MANCALA_LEFT_BOTTOM];
+        }
+        for (int i = 1 + roleAdder; i < 6 + roleAdder; i++) {
+            ownScore += game.board.getBoard()[i];
+            oppScore += game.board.getBoard()[14 - i];
+        }
+        return ownScore - oppScore + ownMancala - oppMancala;
+    }
+
+    @Override
+    public void makeMove(Game game) {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Mancala tttGame = (Mancala) game;
+        int alpha = -INF;
+        int beta = INF;
+        CellValueTuple best = max(tttGame, alpha, beta, depth);
+        if (best.move != -1) {
+            tttGame.board.updateFromMove(best.move, role);
+        } else {
+            System.out.println("ERROR: COULD NOT FIND A MOVE/END OF MOVES");
+        }
+    }
+
+    private CellValueTuple max(Mancala game, int alpha, int beta, int depth) {
+        CellValueTuple maxCVT = new CellValueTuple(); //move = -1
+        maxCVT.utility = -INF;
+
+        int winner = game.checkForWin();
+	//if state is terminal return Utility(state)
+        //terminal check
+        if (winner == role) {
+            maxCVT.utility = 1; //this agent wins
+            return maxCVT;
+        } else if (winner != -1) {
+            maxCVT.utility = -1; //opponent wins
+            return maxCVT;
+        } else if (game.isDraw()) {
+            maxCVT.utility = 0; //draw
+            return maxCVT;
+        }
+        //if depth == 0 return Evaluate(state) 
+        if (depth == 0) {
+            maxCVT.utility = evaluate(game);
+            return maxCVT;
+        }
         
+        //iterate through all possible moves => max 6
+        int v = -INF;
+        int roleAdder = 0;
+        if (role == 1) {
+            roleAdder = 7;
+        }
+       
+        for (int i = 1 + roleAdder; i <= 6 + roleAdder; i++) {
+            //if(pot is empty, we cannot click there) continue;
+            if (!game.isValidMove(i, role)) {
+                continue;
+            }
+            //reaching here it means we've found a  valid move
+            //temporarily making that move
+            Board boardCopy = new Board(game.board.getBoard(), game.board.freeTurn);
+            game.board.updateFromMove(i, role);
+            boolean isGoingAgain = game.board.freeTurn;
+            
+            if (isGoingAgain) {
+                v = Math.max(v, max(game, alpha, beta, depth-1).utility);
+                //already min found a worse path for me (beta), so he won't let me take the new v
+                if (v >= beta) {
+                    maxCVT.utility = v;
+                    maxCVT.move = i;
+                    return maxCVT;
+                }
+                alpha = Math.max(alpha, v);
+                maxCVT.utility = v;
+                maxCVT.move = i;
+            
+            
+            } else {
+                
+                v = Math.max(v, min(game, alpha, beta, depth-1).utility);
+                //already min found a worse path for me (beta), so he won't let me take the new v
+                if (v >= beta) {
+                    maxCVT.utility = v;
+                    maxCVT.move = i;
+                    return maxCVT;
+                }
+                alpha = Math.max(alpha, v);
+                maxCVT.utility = v;
+                maxCVT.move = i;
+            }
+
+           
+            
+            //reverting back to original state
+            game.board = boardCopy;
+        }
+        return maxCVT;
+    }
+
+    
+    private CellValueTuple min(Mancala game, int alpha, int beta, int depth) {
+        CellValueTuple minCVT = new CellValueTuple(); //move = -1
+        minCVT.utility = +INF;
+
+        int winner = game.checkForWin();
+	//if state is terminal return Utility(state)
+        //terminal check
+        if (winner == role) {
+            minCVT.utility = 1; //this agent wins
+            return minCVT;
+        } else if (winner != -1) {
+            minCVT.utility = -1; //opponent wins
+            return minCVT;
+        } else if (game.isDraw()) {
+            minCVT.utility = 0; //draw
+            return minCVT;
+        }
+        //if depth == 0 return Evaluate(state) 
+        if (depth == 0) {
+            minCVT.utility = evaluate(game);
+            return minCVT;
+        }
         
-        private CellValueTuple min(Mancala game)
-	{	
-		CellValueTuple minCVT = new CellValueTuple();
-		minCVT.utility = -100;
-		
-		int winner = game.checkForWin();
-		
-		//terminal check
-		if(winner == role)
-		{
-			minCVT.utility = 1; //this agent wins
-			return minCVT;
-		}
-		else if(winner!=-1) 
-		{
-			minCVT.utility = -1; //opponent wins
-			return minCVT;  
-		}
-		else if (game.isDraw())
-		{
-			minCVT.utility = 0; //draw
-			return minCVT;  
-		}
-		
-                //iterate through all possible moves => max 6
-                int roleAdder = 0;
-                if(role==1){
-                       roleAdder = 7;
+        //iterate through all possible moves => max 6
+        int v = INF;
+        int roleAdder = 0;
+        if (role == 1) {
+            roleAdder = 7;
+        }
+       
+        for (int i = 1 + roleAdder; i <= 6 + roleAdder; i++) {
+            //if(pot is empty, we cannot click there) continue;
+            if (!game.isValidMove(i, role)) {
+                continue;
+            }
+            //reaching here it means we've found a  valid move
+            //temporarily making that move
+            Board boardCopy = new Board(game.board.getBoard(), game.board.freeTurn);
+            game.board.updateFromMove(i, role);
+            boolean isGoingAgain = game.board.freeTurn;
+            
+            if (isGoingAgain) {
+                v = Math.min(v, min(game, alpha, beta, depth-1).utility);
+                //already min found a worse path for me (beta), so he won't let me take the new v
+                if (v <= alpha) {
+                    minCVT.utility = v;
+                    minCVT.move = i;
+                    return minCVT;
                 }
-
-                for (int i = 1+roleAdder; i <= 6+roleAdder; i++) 
-                {
-                    //if(pot is empty, we cannot click there) continue;
-                    if(!game.isValidMove(i, role)) continue;
-
-                    //reaching here it means we've found a  valid move
-                    //temporarily making that move
-                    Board boardCopy = new Board(game.board.getBoard(), game.board.freeTurn);
-                    game.board.updateFromMove(i, role);
-                    boolean isGoingAgain = game.board.freeTurn;
-                    int v = -20;
-                    if(isGoingAgain){
-                        v = min(game).utility;
-                    }else{
-                        v = max(game).utility;
-                    }
-                    if(v>minCVT.utility)
-                    {
-                            minCVT.utility=v;
-                            minCVT.move = i;
-                    }
-                    //reverting back to original state
-                    game.board = boardCopy;
+                beta = Math.min(alpha, v);
+                minCVT.utility = v;
+                minCVT.move = i;
+            
+            
+            } else {
+                
+                v = Math.min(v, max(game, alpha, beta, depth-1).utility);
+                if (v <= alpha) {
+                    minCVT.utility = v;
+                    minCVT.move = i;
+                    return minCVT;
                 }
-              return minCVT;		
-	}
+                beta = Math.min(alpha, v);
+                minCVT.utility = v;
+                minCVT.move = i;
+            }
 
-	private int minRole()
-	{
-		if(role==0)return 1;
-		else return 0;
-	}
+           
+            
+            //reverting back to original state
+            game.board = boardCopy;
+        }
+        return minCVT;
+    }
 
-	class CellValueTuple
-	{
-		int move, utility;
-		public CellValueTuple() {
-			// TODO Auto-generated constructor stub
-			move = -1;
-		}
-	}
+    private int minRole() {
+        if (role == 0) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    class CellValueTuple {
+
+        int move, utility;
+
+        public CellValueTuple() {
+            // TODO Auto-generated constructor stub
+            move = -1;
+        }
+    }
 
 }
