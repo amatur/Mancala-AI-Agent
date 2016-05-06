@@ -2,6 +2,8 @@
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Board {
 
@@ -50,7 +52,7 @@ public class Board {
         }
 
         //distribute coins
-        board[startMovingPos] -= startMovingCoins;
+       board[startMovingPos] -= startMovingCoins;
         int loop_counter = startMovingCoins;
         for (int i = 0; i < loop_counter;) {
             i++;
@@ -60,8 +62,11 @@ public class Board {
                     loop_counter++;
                     continue;
                 }
+              
+                //board[startMovingPos] --;
                 board[newpos]++;
-
+                
+                
                 //last coin landing on an empty pot
                 if (i == loop_counter && board[newpos] == 1 && 1 <= newpos && newpos <= 6) {
                    // printBoard();
@@ -79,7 +84,10 @@ public class Board {
                     loop_counter++;
                     continue;
                 }
+                
+               // board[startMovingPos] --;
                 board[newpos]++;
+                
                 //last coin landing on an empty pot
                 if (i == loop_counter && board[newpos] == 1 && 8 <= newpos && newpos <= 13) {
                    // printBoard();
@@ -93,7 +101,7 @@ public class Board {
             }
 
         }
-
+        
         int totcoins = 0;
         totcoins += board[MANCALA_LEFT_BOTTOM];
         totcoins += board[MANCALA_RIGHT_TOP];
@@ -208,6 +216,12 @@ public class Board {
     public int[] getBoard() {
         return board;
     }
+    public void setBoard(int board[]) {
+        this.board = board;
+    }
+    public void setGame(Mancala g) {
+        this.game = g;
+    }
 
     public boolean equals(Object y) // does this board equal y?
     {
@@ -236,4 +250,6 @@ public class Board {
     public static final int MANCALA_LEFT_BOTTOM = 7;
     public static final int MANCALA_RIGHT_TOP = 0;
     public boolean freeTurn;
+    public GUI gui;
+    public Mancala game;
 }

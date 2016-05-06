@@ -1,3 +1,6 @@
+
+import javax.swing.JFrame;
+
 /**
  * Example class extending Game class
  *
@@ -9,6 +12,9 @@ public class Mancala extends Game {
      * The actual game board -1 empty, 0 -> O, 1 -> X
      */
     public Board board;
+    public Board backupBoard;
+    public GUI mancalaGUI;
+    
     /**
      * First agent starts with O (LEFT)
      *
@@ -23,7 +29,20 @@ public class Mancala extends Game {
         // Here, first means the first argument of the constructor
         // Which of a and b will actually give the first move is chosen randomly. See Game class
         name = "Mancala";
+        
         board = new Board();
+        
+        backupBoard = new Board();                
+        backupBoard.setBoard(board.getArrayCopy(board.getBoard())); 
+        
+        mancalaGUI = new GUI("Mancala", backupBoard); //jFrame
+        mancalaGUI.setSize(400, 700);
+        mancalaGUI.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mancalaGUI.setVisible(true);
+        mancalaGUI.setResizable(false);
+        board.setGame(this);
+        backupBoard.setGame(this);
+        
     }
     
     boolean isValidMove(int move, int role){
@@ -55,7 +74,10 @@ public class Mancala extends Game {
      */
     @Override
     void showGameState() {
-        board.printBoard();
+         board.printBoard();
+        
+         backupBoard.setBoard(board.getArrayCopy(board.getBoard())); 
+         mancalaGUI.repaint();
     }
 
     /**
@@ -101,8 +123,13 @@ public class Mancala extends Game {
 		while(!isFinished())
 		{
 			updateMessage(agent[turn].name+ "'s turn.");
-			agent[turn].makeMove(this);
+		
+                        
+                        agent[turn].makeMove(this);
 			showGameState();
+                        
+                       
+                        
                         if(!board.freeTurn){
                             turn = (turn+1)%2;
                         }else{
@@ -117,4 +144,7 @@ public class Mancala extends Game {
 			updateMessage("Game drawn!!");
 		
 	}
+        
+        
+        
 }

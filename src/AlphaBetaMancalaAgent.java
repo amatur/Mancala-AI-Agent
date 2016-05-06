@@ -1,13 +1,13 @@
 /**
- * Example MiniMax agent extending Agent class.
+ * Example AlphaBeta agent extending Agent class.
  * Here, for simplicity of understanding min and max functions are written separately. One single function can do the task. 
  * @author Amatur
  *
  */
-public class MinimaxTTTAgent extends Agent
+public class AlphaBetaMancalaAgent extends Agent
 {
 	
-	public MinimaxTTTAgent(String name) {
+	public AlphaBetaMancalaAgent(String name) {
 		super(name);
 		// TODO Auto-generated constructor stub
 	}
@@ -65,8 +65,6 @@ public class MinimaxTTTAgent extends Agent
                     //reaching here it means we've found a  valid move
                     //temporarily making that move
                     Board boardCopy = new Board(game.board.getBoard(), game.board.freeTurn);
-                    //game.mancalaGUI.board = boardCopy;
-                    
                     game.board.updateFromMove(i, role);
                     boolean isGoingAgain = game.board.freeTurn;
                     int v = -20;
@@ -83,8 +81,6 @@ public class MinimaxTTTAgent extends Agent
                     }
                     //reverting back to original state
                     game.board = boardCopy;
-                    // game.mancalaGUI.board = game.board;
-                    //game.mancalaGUI.repaint();
                 }
               return maxCVT;		
 	}
@@ -143,8 +139,6 @@ public class MinimaxTTTAgent extends Agent
                     }
                     //reverting back to original state
                     game.board = boardCopy;
-                    //game.backupBoard = boardCopy;
-                    //game.mancalaGUI.repaint();
                 }
               return minCVT;		
 	}
