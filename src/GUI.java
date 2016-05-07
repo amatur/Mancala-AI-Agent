@@ -133,6 +133,8 @@ public class GUI extends JFrame {
                         g.fillRect(cellX, cellY + 5, MANCALA_WIDTH, BOX_WIDTH);
                         g.setColor(new Color(0xd50000));
                         g.draw3DRect(cellX, cellY + 5, MANCALA_WIDTH, BOX_WIDTH, true);
+                        g.setColor(Color.BLUE);
+                        
                         break;
                     default:
                         int SPAN2 = 5;
@@ -153,9 +155,19 @@ public class GUI extends JFrame {
                 }
 
             }
+             g.setColor(Color.WHITE);
+            byte[] bx = null;
+             bx =( "(" + Integer.toString(board.getBoard()[0])+")").getBytes();
+                        g.drawBytes(bx, 0, bx.length, 260, 20);
+                        bx =( "(" + Integer.toString(board.getBoard()[7])+")").getBytes();
+                        g.drawBytes(bx, 0, bx.length, 260, 570);
             
-            
-            if(GUIrole==0){
+            if (game.isFinished()){
+                g.setColor(Color.BLACK);
+                byte[] b = ("GAME END.").getBytes();
+                g.drawBytes(b, 0, b.length, 310, 140);
+            }            
+            else if(GUIrole==0){
                 g.setColor(Color.RED);
                 byte[] b = ("RED's Turn").getBytes();
                 g.drawBytes(b, 0, b.length, 310, 140);
