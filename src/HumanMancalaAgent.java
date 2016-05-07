@@ -24,6 +24,7 @@ public class HumanMancalaAgent extends Agent {
 
         int move;
         Mancala tttGame = (Mancala) game;
+        tttGame.mancalaGUI.HumanRole = role;
         boolean first = true;
         do {
             if (first) {
@@ -44,11 +45,31 @@ public class HumanMancalaAgent extends Agent {
             }
             move = -1;
             try {
-                move = in.nextInt();
+                System.out.println(tttGame.mancalaGUI.grid.getClickedMove(role));
+                if(tttGame.consoleEnable){
+                                    move = in.nextInt();
+                                        
+                }else{
+                   
+                    while(tttGame.mancalaGUI.grid.getClickedMove(role)==-1){
+                        ;
+                    }
+                    move = tttGame.mancalaGUI.grid.getClickedMove(role);
+                    tttGame.mancalaGUI.clickedX = 0;
+                     tttGame.mancalaGUI.clickedY = 0;
+                   // tttGame.mancalaGUI. = -1;
+                }
+                       
                 System.out.println(this.name + "'s (human) move: "+ " ("+role+ ") " + move);
             } catch (Exception e) {
                 first = false;
-                in.next();
+                System.out.println(tttGame.mancalaGUI.grid.getClickedMove(role));
+                if(tttGame.consoleEnable){
+                                    in.nextInt();
+
+                }else{
+                    
+                }
                 continue;
             }
             

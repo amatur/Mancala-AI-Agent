@@ -5,6 +5,8 @@ import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -18,13 +20,21 @@ public class GUI extends JFrame {
     public JFrame jf = this;
     public Grid grid;
     public Board board;
-
-    public GUI(String name, Board board) {
+    public int clickedX;
+    public int clickedY;
+    public int POT_RADIUS = 30;
+    public int GUImove;
+    public int GUIrole ;
+    public int HumanRole ;
+    public Mancala game ;
+    public GUI(String name, Board board, Mancala game) {
         setTitle(name);
         this.board = board;
         this.setLayout(new BorderLayout());
         grid = new Grid();
+        this.game = game;
         add(grid);
+       // add(new JPanel());
     }
 
     class Grid extends JPanel {
@@ -34,7 +44,7 @@ public class GUI extends JFrame {
         private int EDGE = 15;
         private int SPAN = 13;
         private int MANCALA_WIDTH = 170;
-        private JButton jButton1;
+        
         private ArrayList<Cell> fillCells;
 
         public Grid() {
@@ -47,12 +57,29 @@ public class GUI extends JFrame {
                 fillCell(i, b1[i], i);
             }
             repaint();
+            
             // newTimer = new Timer(500, paintTimerAction);
 //            jButton1.addActionListener(new java.awt.event.ActionListener() {
 //                public void actionPerformed(java.awt.event.ActionEvent evt) {
 //                    jButton1ActionPerformed(evt);
 //                }
 //            });
+            addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent me) {
+                super.mouseClicked(me);
+                System.err.println(me.getPoint());
+                clickedX = me.getPoint().x;
+                clickedY = me.getPoint().y;
+                System.err.println(GUImove);
+                GUImove = getClickedMove(GUIrole);
+                
+                if(GUIrole!=HumanRole){
+                    clickedX = 0;
+                    clickedY = 0;
+                    GUImove = -1;
+                }
+            }
+        });
         }
 
 //        private void jButton1ActionPerformed(ActionEvent evt) {
@@ -62,9 +89,32 @@ public class GUI extends JFrame {
 //            //JOptionPane.showMessageDialog(null, "Started");
 //        }
 
+        public int calcClickedDistanceFrom(int x, int y){
+            return (x - clickedX)*(x - clickedX) + (y - clickedY)*(y - clickedY);
+        }
+        
+        public int getClickedMove(int role){
+            if(role==0){
+                for(int i=0; i<6 ; i++){
+                    if(calcClickedDistanceFrom(104, 114+74*i) < POT_RADIUS*POT_RADIUS){
+                        return i+1;
+                    }
+                }
+            }
+            else if(role==1){
+                for(int i=0; i<6 ; i++){
+                    if(calcClickedDistanceFrom(184, 114+74*i) < POT_RADIUS*POT_RADIUS){
+                        return i+1;
+                    }
+                }
+            }
+             return -1;
+        }
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
+            
+            
             g.setColor(new Color(0x263238));
             g.fillRect(0, 0, 300, 620);
             for (Cell fillCell : fillCells) {
@@ -102,6 +152,17 @@ public class GUI extends JFrame {
 
                 }
 
+            }
+            
+            
+            if(GUIrole==0){
+                g.setColor(Color.RED);
+                byte[] b = ("RED's Turn").getBytes();
+                g.drawBytes(b, 0, b.length, 310, 140);
+            }else{
+                g.setColor(Color.BLUE);
+                byte[] b = ("BLUE's Turn").getBytes();
+                g.drawBytes(b, 0, b.length, 310, 140);
             }
             repaint();
         }

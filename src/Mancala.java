@@ -11,9 +11,12 @@ public class Mancala extends Game {
     /**
      * The actual game board -1 empty, 0 -> O, 1 -> X
      */
+    public boolean consoleEnable = false;
     public Board board;
     public Board backupBoard;
     public GUI mancalaGUI;
+   
+    
     
     /**
      * First agent starts with O (LEFT)
@@ -35,7 +38,7 @@ public class Mancala extends Game {
         backupBoard = new Board();                
         backupBoard.setBoard(board.getArrayCopy(board.getBoard())); 
         
-        mancalaGUI = new GUI("Mancala", backupBoard); //jFrame
+        mancalaGUI = new GUI("Mancala", backupBoard, this); //jFrame
         mancalaGUI.setSize(400, 700);
         mancalaGUI.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mancalaGUI.setVisible(true);
@@ -123,7 +126,7 @@ public class Mancala extends Game {
 		while(!isFinished())
 		{
 			updateMessage(agent[turn].name+ "'s turn.");
-		
+                         mancalaGUI.GUIrole = turn;    
                         
                         agent[turn].makeMove(this);
 			showGameState();

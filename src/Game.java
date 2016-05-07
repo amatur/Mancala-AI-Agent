@@ -42,6 +42,7 @@ public abstract class Game
 			showGameState();
 			
 			turn = (turn+1)%2;
+                        
 		}
 		
 		if (winner != null)
