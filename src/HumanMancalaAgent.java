@@ -63,7 +63,7 @@ public class HumanMancalaAgent extends Agent {
                 System.out.println(this.name + "'s (human) move: "+ " ("+role+ ") " + move);
             } catch (Exception e) {
                 first = false;
-                System.out.println(tttGame.mancalaGUI.grid.getClickedMove(role));
+                //System.out.println(tttGame.mancalaGUI.grid.getClickedMove(role));
                 if(tttGame.consoleEnable){
                                     in.nextInt();
 

@@ -71,10 +71,11 @@ public class Board {
                 if (i == loop_counter && board[newpos] == 1 && 1 <= newpos && newpos <= 6) {
                    // printBoard();
                    // System.out.println("Captured!");
-
-                    board[MANCALA_LEFT_BOTTOM] += board[RIGHT_POT[newpos]] + board[LEFT_POT[newpos]];
-                    board[RIGHT_POT[newpos]] = 0;
-                    board[LEFT_POT[newpos]] = 0;
+                    if(board[RIGHT_POT[newpos]]!=0){
+                        board[MANCALA_LEFT_BOTTOM] += board[RIGHT_POT[newpos]] + board[LEFT_POT[newpos]];
+                        board[RIGHT_POT[newpos]] = 0;
+                        board[LEFT_POT[newpos]] = 0;
+                    }
                 }
 
                 
@@ -91,11 +92,15 @@ public class Board {
                 //last coin landing on an empty pot
                 if (i == loop_counter && board[newpos] == 1 && 8 <= newpos && newpos <= 13) {
                    // printBoard();
-                   // System.out.println("Captured!");
-
-                    board[MANCALA_RIGHT_TOP] += board[RIGHT_POT[14 - newpos]] + board[LEFT_POT[14 - newpos]];
-                    board[RIGHT_POT[14 - newpos]] = 0;
-                    board[LEFT_POT[14 - newpos]] = 0;
+                    // System.out.println("Captured!");
+                    //CAPTURE CHANGE
+                    if(board[LEFT_POT[14 - newpos]]!=0){
+                         board[MANCALA_RIGHT_TOP] += board[RIGHT_POT[14 - newpos]] + board[LEFT_POT[14 - newpos]];
+                        board[RIGHT_POT[14 - newpos]] = 0;
+                        board[LEFT_POT[14 - newpos]] = 0;
+                    }
+                        
+                   
                 }
                 
             }

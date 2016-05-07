@@ -25,7 +25,7 @@ public class Solver {
 //            System.setIn(is);
             
 		Board b = new Board();
-                Agent a1 = new AlphaBetaMancalaAgent("Machine", 14);
+                Agent a1 = new AlphaBetaMancalaAgent("Machine", 16);
                 Agent a2 = new HumanMancalaAgent("TASNIM");
                 Game game = new Mancala(a1,a2);
                 game.play();

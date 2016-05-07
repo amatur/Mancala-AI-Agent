@@ -71,10 +71,10 @@ public class AlphaBetaMancalaAgent extends Agent {
 	//if state is terminal return Utility(state)
         //terminal check
         if (winner == role) {
-            maxCVT.utility = 1; //this agent wins
+            maxCVT.utility = 100; //this agent wins
             return maxCVT;
         } else if (winner != -1) {
-            maxCVT.utility = -1; //opponent wins
+            maxCVT.utility = -100; //opponent wins
             return maxCVT;
         } else if (game.isDraw()) {
             maxCVT.utility = 0; //draw
@@ -83,6 +83,7 @@ public class AlphaBetaMancalaAgent extends Agent {
         //if depth == 0 return Evaluate(state) 
         if (depth == 0) {
             maxCVT.utility = evaluate(game);
+            //maxCVT.move = ;
             return maxCVT;
         }
         
@@ -155,10 +156,10 @@ public class AlphaBetaMancalaAgent extends Agent {
 	//if state is terminal return Utility(state)
         //terminal check
         if (winner == role) {
-            minCVT.utility = 1; //this agent wins
+            minCVT.utility = 100; //this agent wins
             return minCVT;
         } else if (winner != -1) {
-            minCVT.utility = -1; //opponent wins
+            minCVT.utility = -100; //opponent wins
             return minCVT;
         } else if (game.isDraw()) {
             minCVT.utility = 0; //draw

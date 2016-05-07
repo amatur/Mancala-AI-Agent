@@ -67,10 +67,10 @@ public class GUI extends JFrame {
             addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent me) {
                 super.mouseClicked(me);
-                System.err.println(me.getPoint());
+                //System.err.println(me.getPoint());
                 clickedX = me.getPoint().x;
                 clickedY = me.getPoint().y;
-                System.err.println(GUImove);
+               // System.err.println(GUImove);
                 GUImove = getClickedMove(GUIrole);
                 
                 if(GUIrole!=HumanRole){
